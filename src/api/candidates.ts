@@ -1,8 +1,8 @@
-const BASE_URL_Logicbox = "http://localhost:3002/api/v1/admin";
-const BASE_URL_TradeTalk = "http://localhost:3001/api/v1/admin";
+const BASE_URL_Logicbox = import.meta.env.VITE_BASE_URL_LOGICBOX;
+const BASE_URL_TradeTalk = import.meta.env.VITE_BASE_URL_TRADETALK;
 
 export const getCandidatesLogicbox = async () => {
-    const response = await fetch(`${BASE_URL_Logicbox}/candidates-referrals`, {
+    const response = await fetch(`${BASE_URL_Logicbox}/referrals`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",

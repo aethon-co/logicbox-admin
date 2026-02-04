@@ -14,7 +14,11 @@ interface Candidate {
     createdAt: string;
     updatedAt: string;
     __v: number;
-    referredUsers: Candidate[];
+    referredUsers?: Candidate[];
+    referredSchools?: Candidate[]; // Handling referred schools for Logicbox
+    schoolName?: string;
+    standard?: string;
+    address?: string;
 }
 
 interface CandidatesTableProps {
@@ -51,10 +55,8 @@ const CandidatesTable = ({ data, isLoading, error, title }: CandidatesTableProps
                             <th>Name</th>
                             <th>Email</th>
                             <th>Phone</th>
-                            <th>Role</th>
                             <th>Referral Code</th>
                             <th>Referrals</th>
-                            <th>Joined</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -69,24 +71,47 @@ const CandidatesTable = ({ data, isLoading, error, title }: CandidatesTableProps
                                     <td><span className="candidate-name">{candidate.name}</span></td>
                                     <td>{candidate.email}</td>
                                     <td>{candidate.phoneNumber}</td>
-                                    <td><span className="badge badge-role">{candidate.role}</span></td>
                                     <td><span className="badge badge-referral">{candidate.referralCode}</span></td>
                                     <td><span className="referral-count">{candidate.referralCount}</span></td>
-                                    <td>{new Date(candidate.createdAt).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}</td>
                                 </tr>
                                 {expandedRow === candidate._id && (
                                     <tr className="expanded-row">
                                         <td colSpan={8} style={{ padding: 0 }}>
                                             <div className="nested-table-container">
-                                                {candidate.referredUsers && candidate.referredUsers.length > 0 ? (
+                                                {candidate.referredSchools && candidate.referredSchools.length > 0 ? (
+                                                    // Table for Referred Schools
+                                                    <table className="nested-table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>School Name</th>
+                                                                <th>Name</th>
+                                                                <th>Standard</th>
+                                                                <th>Address</th>
+                                                                <th>Email</th>
+                                                                <th>Phone</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {candidate.referredSchools.map((school: Candidate) => (
+                                                                <tr key={school._id}>
+                                                                    <td><span className="candidate-name">{school.name}</span></td>
+                                                                    <td>{school.schoolName}</td>
+                                                                    <td>{school.standard || '-'}</td>
+                                                                    <td>{school.address || '-'}</td>
+                                                                    <td>{school.email}</td>
+                                                                    <td>{school.phoneNumber}</td>
+                                                                </tr>
+                                                            ))}
+                                                        </tbody>
+                                                    </table>
+                                                ) : candidate.referredUsers && candidate.referredUsers.length > 0 ? (
+                                                    // Table for Referred Users
                                                     <table className="nested-table">
                                                         <thead>
                                                             <tr>
                                                                 <th>Referred User</th>
                                                                 <th>Email</th>
                                                                 <th>Phone</th>
-                                                                <th>Role</th>
-                                                                <th>Joined Date</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -95,14 +120,12 @@ const CandidatesTable = ({ data, isLoading, error, title }: CandidatesTableProps
                                                                     <td><span className="candidate-name">{user.name}</span></td>
                                                                     <td>{user.email}</td>
                                                                     <td>{user.phoneNumber}</td>
-                                                                    <td><span className="badge badge-role">{user.role}</span></td>
-                                                                    <td>{new Date(user.createdAt).toLocaleDateString()}</td>
                                                                 </tr>
                                                             ))}
                                                         </tbody>
                                                     </table>
                                                 ) : (
-                                                    <div className="no-referrals">No referrals found for this candidate.</div>
+                                                    <div className="no-referrals">No referrals found.</div>
                                                 )}
                                             </div>
                                         </td>
